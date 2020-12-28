@@ -1,0 +1,34 @@
+---
+- name: gather information about a DHCP options set
+  ec2_vpc_dhcp_option_info:
+    region: "{{ region }}"
+  register: dhcp_info  
+
+- name: delete a vpc (public)
+  ec2_vpc_net:
+    name: public
+    cidr_block: "{{ public_cidr_block }}"
+    region: "{{ region }}"
+    state: absent
+
+- name: delete a vpc (private)
+  ec2_vpc_net:
+    name: private
+    cidr_block: "{{ private_cidr_block }}"
+    region: "{{ region }}"
+    state: absent
+
+- name: delete a vpc (isolated)
+  ec2_vpc_net:
+    name: isolated
+    cidr_block: "{{ isolated_cidr_block }}"
+    region: "{{ region }}"
+    state: absent
+
+- name: delete a DHCP options set
+  ec2_vpc_dhcp_option:
+    region: "{{ region }}"
+    dhcp_options_id: "{{ item.dhcp_options_id }}"
+    state: absent
+  loop: "{{ dhcp_info.dhcp_options }}"  
+

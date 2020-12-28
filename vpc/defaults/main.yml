@@ -1,0 +1,9 @@
+---
+# defaults file for vpc
+
+region: ca-central-1
+
+public_cidr_block: 10.0.0.0/24
+private_cidr_block: 172.16.0.0/24
+isolated_cidr_block: 192.168.0.0/24
+

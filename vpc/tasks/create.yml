@@ -1,0 +1,21 @@
+---
+- name: create a vpc (public)
+  ec2_vpc_net:
+    name: public
+    cidr_block: "{{ public_cidr_block }}"
+    region: "{{ region }}"
+    state: present
+
+- name: create a vpc (private)
+  ec2_vpc_net:
+    name: private
+    cidr_block: "{{ private_cidr_block }}"
+    region: "{{ region }}"
+    state: present
+
+- name: create a vpc (isolated)
+  ec2_vpc_net:
+    name: isolated
+    cidr_block: "{{ isolated_cidr_block }}"
+    region: "{{ region }}"
+    state: present
