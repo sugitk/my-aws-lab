@@ -1,12 +1,12 @@
 ---
-- name: gether information about VPC
+- name: gather information about VPC
   ec2_vpc_net_info:
     region: "{{ region }}"
     filters:
       "tag:Name": public
   register: vpc_info
 
-- name: gether information about subnet
+- name: gather information about subnet
   ec2_vpc_subnet_info:
     region: "{{ region }}"
     filters:
