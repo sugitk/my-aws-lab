@@ -10,9 +10,19 @@
 - name: create a subnet (public)
   ec2_vpc_subnet:
     vpc_id: "{{ vpc_public.vpc.id }}"
-    cidr: "{{ public_cidr_block }}"
+    cidr: "{{ public_cidr_block_a }}"
+    az: "{{ az_a }}"
     tags:
-      Name: public subnet
+      Name: public subnet A
+    state: present
+
+- name: create a subnet (public)
+  ec2_vpc_subnet:
+    vpc_id: "{{ vpc_public.vpc.id }}"
+    cidr: "{{ public_cidr_block_b }}"
+    az: "{{ az_b }}"
+    tags:
+      Name: public subnet B
     state: present
 
 - name: create a vpc (private)
@@ -26,9 +36,19 @@
 - name: create a subnet (private)
   ec2_vpc_subnet:
     vpc_id: "{{ vpc_private.vpc.id }}"
-    cidr: "{{ private_cidr_block }}"
+    cidr: "{{ private_cidr_block_a }}"
+    az: "{{ az_a }}"
     tags:
-      Name: private subnet
+      Name: private subnet A
+    state: present
+
+- name: create a subnet (private)
+  ec2_vpc_subnet:
+    vpc_id: "{{ vpc_private.vpc.id }}"
+    cidr: "{{ private_cidr_block_b }}"
+    az: "{{ az_b }}"
+    tags:
+      Name: private subnet B
     state: present
 
 - name: create a vpc (isolated)
@@ -42,9 +62,19 @@
 - name: create a subnet (isolated)
   ec2_vpc_subnet:
     vpc_id: "{{ vpc_isolated.vpc.id }}"
-    cidr: "{{ isolated_cidr_block }}"
+    cidr: "{{ isolated_cidr_block_a }}"
+    az: "{{ az_a }}"
     tags:
-      Name: isolated subnet
+      Name: isolated subnet A
+    state: present
+
+- name: create a subnet (isolated)
+  ec2_vpc_subnet:
+    vpc_id: "{{ vpc_isolated.vpc.id }}"
+    cidr: "{{ isolated_cidr_block_b }}"
+    az: "{{ az_b }}"
+    tags:
+      Name: isolated subnet B
     state: present
 
 - name: create a IGW
