@@ -90,9 +90,6 @@
       vpc-id: "{{ vpc_public.vpc.id }}"
   register: route_table_info
 
-- debug:
-    var: route_table_info
-
 - name: public subnet route table
   ec2_vpc_route_table:
     vpc_id: "{{ vpc_public.vpc.id }}"
