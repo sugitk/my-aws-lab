@@ -1,17 +1,22 @@
 Manage my AWS lab using Ansible
 =================================
 
-To create:
+To create VPC:
 
 ```
-$ ansible-playbook playbook.yml -e create=true
+$ ansible-playbook vpc.yml -e create=true
 ```
 
-
-To remote:
+To remove VPC:
 
 ```
-$ ansible-playbook playbook.yml -e create=false
+$ ansible-playbook vpc.yml -e create=false
+```
+
+To add EC2 instances in VPC:
+
+```
+$ ansible-playbook ec2.yml -e create=true
 ```
 
 Requirements

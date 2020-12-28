@@ -1,2 +1,9 @@
 ---
 # defaults file for ec2
+
+region: ca-central-1
+key: tsugimur-canada
+
+ami_rhel83: ami-08523c5075ba75813
+ami_rhel79: ami-0de9a412a63b8f99d
+
