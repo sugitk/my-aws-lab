@@ -1,65 +1,61 @@
 ---
-- name: create a vpc (public)
+- name: create a vpc
   ec2_vpc_net:
-    name: public
-    cidr_block: "{{ public_cidr_block }}"
+    name: "{{ lab_vpc_name }}"
+    cidr_block: "{{ lab_cidr_block }}"
     region: "{{ region }}"
     state: present
-  register: vpc_public
+  register: vpc
 
-- name: create a subnet (public)
+- name: create a subnet (public A)
   ec2_vpc_subnet:
-    vpc_id: "{{ vpc_public.vpc.id }}"
+    vpc_id: "{{ vpc.vpc.id }}"
     cidr: "{{ public_cidr_block_a }}"
     az: "{{ az_a }}"
     tags:
       Name: public subnet A
     state: present
+  register: public_subnet_a
 
-- name: create a subnet (public)
+- name: create a subnet (public B)
   ec2_vpc_subnet:
-    vpc_id: "{{ vpc_public.vpc.id }}"
+    vpc_id: "{{ vpc.vpc.id }}"
     cidr: "{{ public_cidr_block_b }}"
     az: "{{ az_b }}"
     tags:
       Name: public subnet B
     state: present
+  register: public_subnet_b
 
-- name: create a vpc (private)
-  ec2_vpc_net:
-    name: private
-    cidr_block: "{{ private_cidr_block }}"
-    region: "{{ region }}"
-    state: present
-  register: vpc_private
-
-- name: create a subnet (private)
+- name: create a subnet (private A)
   ec2_vpc_subnet:
-    vpc_id: "{{ vpc_private.vpc.id }}"
+    vpc_id: "{{ vpc.vpc.id }}"
     cidr: "{{ private_cidr_block_a }}"
     az: "{{ az_a }}"
     tags:
       Name: private subnet A
     state: present
+  register: private_subnet_a
 
-- name: create a subnet (private)
+- name: create a subnet (private B)
   ec2_vpc_subnet:
-    vpc_id: "{{ vpc_private.vpc.id }}"
+    vpc_id: "{{ vpc.vpc.id }}"
     cidr: "{{ private_cidr_block_b }}"
     az: "{{ az_b }}"
     tags:
       Name: private subnet B
     state: present
+  register: private_subnet_b
 
 - name: create a vpc (isolated)
   ec2_vpc_net:
-    name: isolated
+    name: "{{ isolated_vpc_name }}"
     cidr_block: "{{ isolated_cidr_block }}"
     region: "{{ region }}"
     state: present
   register: vpc_isolated
 
-- name: create a subnet (isolated)
+- name: create a subnet (isolated A)
   ec2_vpc_subnet:
     vpc_id: "{{ vpc_isolated.vpc.id }}"
     cidr: "{{ isolated_cidr_block_a }}"
@@ -68,7 +64,7 @@
       Name: isolated subnet A
     state: present
 
-- name: create a subnet (isolated)
+- name: create a subnet (isolated B)
   ec2_vpc_subnet:
     vpc_id: "{{ vpc_isolated.vpc.id }}"
     cidr: "{{ isolated_cidr_block_b }}"
@@ -77,9 +73,9 @@
       Name: isolated subnet B
     state: present
 
-- name: create a IGW
+- name: create an Internet gateway
   ec2_vpc_igw:
-    vpc_id: "{{ vpc_public.vpc.id }}"
+    vpc_id: "{{ vpc.vpc.id }}"
     state: present
   register: igw
 
@@ -87,19 +83,57 @@
   ec2_vpc_route_table_info:
     region: "{{ region }}"
     filters:
-      vpc-id: "{{ vpc_public.vpc.id }}"
+      vpc-id: "{{ vpc.vpc.id }}"
   register: route_table_info
 
-- name: public subnet route table
+- name: subnet route table (public)
   ec2_vpc_route_table:
-    vpc_id: "{{ vpc_public.vpc.id }}"
+    vpc_id: "{{ vpc.vpc.id }}"
     region: "{{ region }}"
     route_table_id: "{{ route_table_info.route_tables[0].id }}"
     lookup: id
     subnets:
-      - "{{ public_cidr_block }}"
+      - "{{ lab_cidr_block }}"
     routes:
       - dest: 0.0.0.0/0
         gateway_id: "{{ igw.gateway_id }}"
+    state: present
+
+- name: create a NAT gateway (public A)
+  ec2_vpc_nat_gateway:
+    subnet_id: "{{ public_subnet_a.subnet.id }}"
+    if_exist_do_not_create: true
+    state: present
+    wait: true
+  register: ngw_a
+ 
+- name: create a NAT gateway (public B)
+  ec2_vpc_nat_gateway:
+    subnet_id: "{{ public_subnet_b.subnet.id }}"
+    if_exist_do_not_create: true
+    state: present
+    wait: true
+  register: ngw_b
+
+- name: subnet route table (private A)
+  ec2_vpc_route_table:
+    vpc_id: "{{ vpc.vpc.id }}"
+    region: "{{ region }}"
+    subnets:
+      - "{{ private_subnet_a.subnet.id }}"
+    routes:
+      - dest: 0.0.0.0/0
+        gateway_id: "{{ ngw_a.nat_gateway_id }}"
+    state: present
+
+- name: subnet route table (private B)
+  ec2_vpc_route_table:
+    vpc_id: "{{ vpc.vpc.id }}"
+    region: "{{ region }}"
+    subnets:
+      - "{{ private_subnet_b.subnet.id }}"
+    routes:
+      - dest: 0.0.0.0/0
+        gateway_id: "{{ ngw_b.nat_gateway_id }}"
     state: present
 
