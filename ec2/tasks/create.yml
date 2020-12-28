@@ -1,0 +1,11 @@
+---
+- name: create a VM (public)
+  ec2:
+    instnace_type: t2.micro
+    image: ami-08523c5075ba75813
+    wait: true
+    assign_public_ip: true
+    volumes:
+      - device_name:
+        volume_size: 30
+  

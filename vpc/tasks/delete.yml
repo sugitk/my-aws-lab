@@ -1,4 +1,8 @@
 ---
+- name: gether information about VPC
+  ec2_vpc_net_info:
+  register: vpc_info
+
 - name: gather information about a DHCP options set
   ec2_vpc_dhcp_option_info:
     region: "{{ region }}"
@@ -15,26 +19,20 @@
     state: absent
   loop: "{{ igw_info.internet_gateways }}"
 
-- name: delete a vpc (public)
-  ec2_vpc_net:
-    name: public
-    cidr_block: "{{ public_cidr_block }}"
-    region: "{{ region }}"
+- name: delete subnets
+  ec2_vpc_subnet:
+    vpc_id: "{{ item.vpc_id }}"
+    cidr: "{{ item.cidr_block }}"
     state: absent
+  loop: "{{ vpc_info.vpcs }}"
 
-- name: delete a vpc (private)
+- name: delete vpcs
   ec2_vpc_net:
-    name: private
-    cidr_block: "{{ private_cidr_block }}"
+    name: "{{ item.tags['Name'] }}"
+    cidr_block: "{{ item.cidr_block }}"
     region: "{{ region }}"
     state: absent
-
-- name: delete a vpc (isolated)
-  ec2_vpc_net:
-    name: isolated
-    cidr_block: "{{ isolated_cidr_block }}"
-    region: "{{ region }}"
-    state: absent
+  loop: "{{ vpc_info.vpcs }}"
 
 - name: delete a DHCP options set
   ec2_vpc_dhcp_option:

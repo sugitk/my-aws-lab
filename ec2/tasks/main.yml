@@ -1,0 +1,7 @@
+---
+- include_tasks: create.yml
+  when: create | bool
+
+- include_tasks: delete.yml
+  when: not create | bool
+

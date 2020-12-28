@@ -7,6 +7,14 @@
     state: present
   register: vpc_public
 
+- name: create a subnet (public)
+  ec2_vpc_subnet:
+    vpc_id: "{{ vpc_public.vpc.id }}"
+    cidr: "{{ public_cidr_block }}"
+    tags:
+      Name: public subnet
+    state: present
+
 - name: create a vpc (private)
   ec2_vpc_net:
     name: private
@@ -14,6 +22,14 @@
     region: "{{ region }}"
     state: present
   register: vpc_private
+
+- name: create a subnet (private)
+  ec2_vpc_subnet:
+    vpc_id: "{{ vpc_private.vpc.id }}"
+    cidr: "{{ private_cidr_block }}"
+    tags:
+      Name: private subnet
+    state: present
 
 - name: create a vpc (isolated)
   ec2_vpc_net:
@@ -23,7 +39,16 @@
     state: present
   register: vpc_isolated
 
+- name: create a subnet (isolated)
+  ec2_vpc_subnet:
+    vpc_id: "{{ vpc_isolated.vpc.id }}"
+    cidr: "{{ isolated_cidr_block }}"
+    tags:
+      Name: isolated subnet
+    state: present
+
 - name: create a IGW
   ec2_vpc_igw:
     vpc_id: "{{ vpc_public.vpc.id }}"
     state: present
+
