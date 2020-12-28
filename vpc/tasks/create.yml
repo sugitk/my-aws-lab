@@ -81,4 +81,28 @@
   ec2_vpc_igw:
     vpc_id: "{{ vpc_public.vpc.id }}"
     state: present
+  register: igw
+
+- name: gather information about route tables (public)
+  ec2_vpc_route_table_info:
+    region: "{{ region }}"
+    filters:
+      vpc-id: "{{ vpc_public.vpc.id }}"
+  register: route_table_info
+
+- debug:
+    var: route_table_info
+
+- name: public subnet route table
+  ec2_vpc_route_table:
+    vpc_id: "{{ vpc_public.vpc.id }}"
+    region: "{{ region }}"
+    route_table_id: "{{ route_table_info.route_tables[0].id }}"
+    lookup: id
+    subnets:
+      - "{{ public_cidr_block }}"
+    routes:
+      - dest: 0.0.0.0/0
+        gateway_id: "{{ igw.gateway_id }}"
+    state: present
 
