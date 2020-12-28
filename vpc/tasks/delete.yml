@@ -4,6 +4,17 @@
     region: "{{ region }}"
   register: dhcp_info  
 
+- name: gather information about IGW
+  ec2_vpc_igw_info:
+    region: "{{ region }}"
+  register: igw_info
+
+- name: delete a IGW
+  ec2_vpc_igw:
+    vpc_id: "{{ item.attachments[0].vpc_id }}"
+    state: absent
+  loop: "{{ igw_info.internet_gateways }}"
+
 - name: delete a vpc (public)
   ec2_vpc_net:
     name: public

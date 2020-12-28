@@ -5,6 +5,7 @@
     cidr_block: "{{ public_cidr_block }}"
     region: "{{ region }}"
     state: present
+  register: vpc_public
 
 - name: create a vpc (private)
   ec2_vpc_net:
@@ -12,10 +13,17 @@
     cidr_block: "{{ private_cidr_block }}"
     region: "{{ region }}"
     state: present
+  register: vpc_private
 
 - name: create a vpc (isolated)
   ec2_vpc_net:
     name: isolated
     cidr_block: "{{ isolated_cidr_block }}"
     region: "{{ region }}"
+    state: present
+  register: vpc_isolated
+
+- name: create a IGW
+  ec2_vpc_igw:
+    vpc_id: "{{ vpc_public.vpc.id }}"
     state: present
