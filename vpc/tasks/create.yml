@@ -1,5 +1,5 @@
 ---
-- name: create a vpc
+- name: create a vpc (lab)
   ec2_vpc_net:
     name: "{{ lab_vpc_name }}"
     cidr_block: "{{ lab_cidr_block }}"
@@ -79,26 +79,6 @@
     state: present
   register: igw
 
-- name: gather information about route tables (public)
-  ec2_vpc_route_table_info:
-    region: "{{ region }}"
-    filters:
-      vpc-id: "{{ vpc.vpc.id }}"
-  register: route_table_info
-
-- name: subnet route table (public)
-  ec2_vpc_route_table:
-    vpc_id: "{{ vpc.vpc.id }}"
-    region: "{{ region }}"
-    route_table_id: "{{ route_table_info.route_tables[0].id }}"
-    lookup: id
-    subnets:
-      - "{{ lab_cidr_block }}"
-    routes:
-      - dest: 0.0.0.0/0
-        gateway_id: "{{ igw.gateway_id }}"
-    state: present
-
 - name: create a NAT gateway (public A)
   ec2_vpc_nat_gateway:
     subnet_id: "{{ public_subnet_a.subnet.id }}"
@@ -106,6 +86,13 @@
     state: present
     wait: true
   register: ngw_a
+
+- name: tag on the NAT gateway (public A)
+  ec2_tag:
+    region: "{{ region }}"
+    resource: "{{ ngw_a.nat_gateway_id }}"
+    tags:
+      Name: NAT gateway public A
  
 - name: create a NAT gateway (public B)
   ec2_vpc_nat_gateway:
@@ -114,6 +101,13 @@
     state: present
     wait: true
   register: ngw_b
+
+- name: tag on the NAT gateway (public B)
+  ec2_tag:
+    region: "{{ region }}"
+    resource: "{{ ngw_b.nat_gateway_id }}"
+    tags:
+      Name: NAT gateway public B
 
 - name: subnet route table (private A)
   ec2_vpc_route_table:
@@ -124,6 +118,8 @@
     routes:
       - dest: 0.0.0.0/0
         gateway_id: "{{ ngw_a.nat_gateway_id }}"
+    tags:
+      Name: NAT gateway private A
     state: present
 
 - name: subnet route table (private B)
@@ -135,5 +131,69 @@
     routes:
       - dest: 0.0.0.0/0
         gateway_id: "{{ ngw_b.nat_gateway_id }}"
+    tags:
+      Name: NAT gateway private B
+    state: present
+
+- name: create a VPC peer
+  ec2_vpc_peer:
+    region: "{{ region }}"
+    vpc_id: "{{ vpc.vpc.id }}"
+    peer_vpc_id: "{{ vpc_isolated.vpc.id }}"
+    state: present
+  register: vpc_peer
+
+- name: accept local VPC peering request
+  ec2_vpc_peer:
+    region: "{{ region }}"
+    peering_id: "{{ vpc_peer.peering_id }}"
+    state: accept
+
+- name: gather information about route tables (lab)
+  ec2_vpc_route_table_info:
+    region: "{{ region }}"
+    filters:
+      vpc-id: "{{ vpc.vpc.id }}"
+      "association.main": "true"
+  register: route_table_info
+
+- name: subnet route table (lab -> internet, lab -> isolated)
+  ec2_vpc_route_table:
+    vpc_id: "{{ vpc.vpc.id }}"
+    region: "{{ region }}"
+    route_table_id: "{{ route_table_info.route_tables[0].id }}"
+    lookup: id
+    subnets:
+      - "{{ lab_cidr_block }}"
+    routes:
+      - dest: "{{ isolated_cidr_block }}"
+        vpc_peering_connection_id: "{{ vpc_peer.peering_id }}"
+      - dest: 0.0.0.0/0
+        gateway_id: "{{ igw.gateway_id }}"
+    tags:
+      Name: lab
+    state: present
+
+- name: gather information about route tables (isolated)
+  ec2_vpc_route_table_info:
+    region: "{{ region }}"
+    filters:
+      vpc-id: "{{ vpc_isolated.vpc.id }}"
+      "association.main": "true"
+  register: route_table_info
+
+- name: subnet route table (isolated -> lab)
+  ec2_vpc_route_table:
+    vpc_id: "{{ vpc_isolated.vpc.id }}"
+    region: "{{ region }}"
+    route_table_id: "{{ route_table_info.route_tables[0].id }}"
+    lookup: id
+    subnets:
+      - "{{ isolated_cidr_block }}"
+    routes:
+      - dest: "{{ lab_cidr_block }}"
+        vpc_peering_connection_id: "{{ vpc_peer.peering_id }}"
+    tags:
+      Name: isolated
     state: present
 

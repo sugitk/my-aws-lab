@@ -1,4 +1,16 @@
 ---
+- name: gather information about VPC peer
+  ec2_vpc_peering_info:
+    region: "{{ region }}"
+  register: vpc_peer_info
+
+- name: delete VPC peer
+  ec2_vpc_peer:
+    region: "{{ region }}"
+    peering_id: "{{ item.vpc_peering_connection_id }}"
+    state: absent
+  loop: "{{ vpc_peer_info.result }}"
+
 - name: gather information about NAT gateway
   ec2_vpc_nat_gateway_info:
     region: "{{ region }}"
