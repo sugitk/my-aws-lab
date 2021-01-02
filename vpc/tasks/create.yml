@@ -14,6 +14,7 @@
     az: "{{ az_a }}"
     tags:
       Name: public subnet A
+      Type: public
     state: present
   register: public_subnet_a
 
@@ -24,6 +25,7 @@
     az: "{{ az_b }}"
     tags:
       Name: public subnet B
+      Type: public
     state: present
   register: public_subnet_b
 
@@ -34,6 +36,7 @@
     az: "{{ az_a }}"
     tags:
       Name: private subnet A
+      Type: private
     state: present
   register: private_subnet_a
 
@@ -44,6 +47,7 @@
     az: "{{ az_b }}"
     tags:
       Name: private subnet B
+      Type: private
     state: present
   register: private_subnet_b
 
@@ -62,6 +66,7 @@
     az: "{{ az_a }}"
     tags:
       Name: isolated subnet A
+      Type: isolated
     state: present
 
 - name: create a subnet (isolated B)
@@ -71,6 +76,7 @@
     az: "{{ az_b }}"
     tags:
       Name: isolated subnet B
+      Type: isolated
     state: present
 
 - name: create an Internet gateway
