@@ -8,6 +8,12 @@
 - include_tasks: standalone_rhel8.yml
   when: create == "standalone_rhel8"
 
+- include_tasks: isolated_rhel7.yml
+  when: create == "isolated_rhel7"
+
+- include_tasks: isolated_rhel8.yml
+  when: create == "isolated_rhel8"
+
 - include_tasks: apdb_rhel7.yml
   when: create == "apdb_rhel7"
 
