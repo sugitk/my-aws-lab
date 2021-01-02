@@ -3,7 +3,7 @@
   ec2_vpc_net_info:
     region: "{{ region }}"
     filters:
-      "tag:Name": public
+      "tag:Name": "{{ lab_vpc_name }}"
   register: vpc_info
 
 - name: gather information about subnet
@@ -11,6 +11,7 @@
     region: "{{ region }}"
     filters:
       vpc-id: "{{ vpc_info.vpcs[0].id }}"
+      "tag:Type": public
   register: subnet_info
 
 - name: find my public ip address
@@ -39,7 +40,7 @@
     image: "{{ ami_rhel83 }}"
     wait: true
     assign_public_ip: true
-    vpc_subnet_id: "{{ subnet_info.subnets[0].subnet_id }}"
+    vpc_subnet_id: "{{ item.subnet_id }}"
     group_id: "{{ security_group.group_id }}"
     region: "{{ region }}"
     key_name: "{{ key }}"
@@ -49,4 +50,5 @@
         volume_type: gp2
     instance_tags:
       Name: bastion
+  with_random_choice: "{{ subnet_info.subnets }}"
   

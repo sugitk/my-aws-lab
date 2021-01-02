@@ -1,7 +1,31 @@
 ---
-- include_tasks: create.yml
-  when: create | bool
+- include_tasks: bastion.yml
+  when: create == "bastion"
 
-- include_tasks: delete.yml
-  when: not create | bool
+- include_tasks: standalone_rhel7.yml
+  when: create == "standalone_rhel7"
+
+- include_tasks: standalone_rhel8.yml
+  when: create == "standalone_rhel8"
+
+- include_tasks: apdb_rhel7.yml
+  when: create == "apdb_rhel7"
+
+- include_tasks: apdb_rhel8.yml
+  when: create == "apdb_rhel8"
+
+- include_tasks: cluster_rhel7.yml
+  when: create == "cluster_rhel7"
+
+- include_tasks: cluster_rhel8.yml
+  when: create == "cluster_rhel8"
+
+- include_tasks: windows2019.yml
+  when: create == "windows2019"
+
+- include_tasks: windows2016.yml
+  when: create == "windows2016"
+
+- include_tasks: windows2012r2.yml
+  when: create == "windows2012r2"
 
