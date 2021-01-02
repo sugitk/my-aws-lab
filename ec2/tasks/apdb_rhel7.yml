@@ -74,6 +74,7 @@
       - device_name: /dev/sda1
         volume_size: 30
         volume_type: gp2
+        delete_on_termination: true
     instance_tags:
       Name: AP RHEL7
   with_random_choice: "{{ subnet_info_public.subnets }}"
@@ -92,6 +93,7 @@
       - device_name: /dev/sda1
         volume_size: 30
         volume_type: gp2
+        delete_on_termination: true
     instance_tags:
       Name: DB RHEL7
   with_random_choice: "{{ subnet_info_private.subnets }}"
