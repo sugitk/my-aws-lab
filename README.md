@@ -13,10 +13,10 @@ To remove VPC:
 $ ansible-playbook vpc.yml -e create=false
 ```
 
-To add EC2 instances in VPC:
+To add EC2 instances in VPC for example:
 
 ```
-$ ansible-playbook ec2.yml -e create=true
+$ ansible-playbook ec2_cluster_rhel8.yml
 ```
 
 Requirements
@@ -50,5 +50,9 @@ Author Information
 
 Takashi Sugimura @sugitk
 
+
+VPC diagram
+----
 ![lab diagram](my_lab.png)
+
 
