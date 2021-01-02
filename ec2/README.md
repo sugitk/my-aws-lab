@@ -17,7 +17,7 @@ Tested with Ansible 2.9.15
 Role Variables
 --------------
 
-create: true
+create: <TYPE>
 
 
 Dependencies
@@ -36,6 +36,8 @@ Example Playbook
   connection: local
   roles:
     - role: ec2
+      vars:
+        create: "apdb_rhel7"
 ```
 
 License

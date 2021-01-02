@@ -11,37 +11,33 @@
     region: "{{ region }}"
     filters:
       vpc-id: "{{ vpc_info.vpcs[0].id }}"
-      "tag:Type": public
+      "tag:Type": private
   register: subnet_info
 
-- name: find my public ip address
-  uri:
-    url: http://ifconfig.me/ip
-    return_content: true
-  register: my_ipaddress
-
-- name: security group for SSH
+- name: security group for Windows
   ec2_group:
-    name: SSH
-    description: SSH
+    name: Windows
+    description: Windows
     region: "{{ region }}"
     vpc_id: "{{ vpc_info.vpcs[0].id }}"
     state: present
     rules:
       - proto: tcp
         ports:
-          - 22
-        cidr_ip: "{{ my_ipaddress.content }}/32"
+          - 3389
+          - 5985
+          - 5986
+        cidr_ip: "{{ public_cidr_block }}"
     tags:
-      Name: SSH
+      Name: Windows
   register: security_group
 
 - name: create a VM
   ec2:
-    instance_type: t2.micro
-    image: "{{ ami_rhel83 }}"
+    instance_type: t2.medium
+    image: "{{ ami_win2019 }}"
     wait: true
-    assign_public_ip: true
+    assign_public_ip: false
     vpc_subnet_id: "{{ item.subnet_id }}"
     group_id: "{{ security_group.group_id }}"
     region: "{{ region }}"
@@ -51,6 +47,6 @@
         volume_size: 30
         volume_type: gp2
     instance_tags:
-      Name: bastion
+      Name: Windows 2019
   with_random_choice: "{{ subnet_info.subnets }}"
   

@@ -14,31 +14,30 @@
       "tag:Type": public
   register: subnet_info
 
-- name: find my public ip address
-  uri:
-    url: http://ifconfig.me/ip
-    return_content: true
-  register: my_ipaddress
-
-- name: security group for SSH
+- name: security group for AP
   ec2_group:
-    name: SSH
-    description: SSH
+    name: AP
+    description: AP
     region: "{{ region }}"
     vpc_id: "{{ vpc_info.vpcs[0].id }}"
     state: present
     rules:
       - proto: tcp
         ports:
+          - 443
+          - 80
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        ports:
           - 22
-        cidr_ip: "{{ my_ipaddress.content }}/32"
+        cidr_ip: "{{ public_cidr_block }}"
     tags:
-      Name: SSH
+      Name: AP
   register: security_group
 
 - name: create a VM
   ec2:
-    instance_type: t2.micro
+    instance_type: t2.medium
     image: "{{ ami_rhel83 }}"
     wait: true
     assign_public_ip: true
@@ -51,6 +50,6 @@
         volume_size: 30
         volume_type: gp2
     instance_tags:
-      Name: bastion
+      Name: standalone RHEL8
   with_random_choice: "{{ subnet_info.subnets }}"
   

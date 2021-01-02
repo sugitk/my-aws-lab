@@ -1,0 +1,9 @@
+---
+- hosts: localhost
+  gather_facts: false
+  connection: local
+  roles:
+    - role: ec2
+      vars:
+        create: "windows2012r2"
+
