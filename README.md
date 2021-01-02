@@ -50,3 +50,5 @@ Author Information
 
 Takashi Sugimura @sugitk
 
+![lab diagram](my_lab.png)
+
