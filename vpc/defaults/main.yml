@@ -1,6 +1,8 @@
 ---
 # defaults file for vpc
 
+owner: tsugimur
+
 region: ca-central-1
 az_a: ca-central-1a
 az_b: ca-central-1b

@@ -2,6 +2,8 @@
 - name: gather information about VPC peer
   ec2_vpc_peering_info:
     region: "{{ region }}"
+    filters:
+      "tag:Owner": "{{ owner }}"
   register: vpc_peer_info
 
 - name: delete VPC peer
@@ -14,6 +16,8 @@
 - name: gather information about NAT gateway
   ec2_vpc_nat_gateway_info:
     region: "{{ region }}"
+    filters:
+      "tag:Owner": "{{ owner }}"
   register: ngw_info
 
 - name: delete NAT gateways
@@ -26,6 +30,8 @@
 - name: gather information about Internet gateway
   ec2_vpc_igw_info:
     region: "{{ region }}"
+    filters:
+      "tag:Owner": "{{ owner }}"
   register: igw_info
 
 - name: delete an Internet gateway
@@ -36,6 +42,8 @@
 
 - name: gather information about subnet
   ec2_vpc_subnet_info:
+    filters:
+      "tag:Owner": "{{ owner }}"
   register: subnet_info
 
 - name: delete subnets
@@ -49,6 +57,8 @@
 - name: gather information about route tables
   ec2_vpc_route_table_info:
     region: "{{ region }}"
+    filters:
+      "tag:Owner": "{{ owner }}"
   register: route_tables_info
 
 - name: delete route tables
@@ -63,6 +73,8 @@
 
 - name: gather information about VPC
   ec2_vpc_net_info:
+    filters:
+      "tag:Owner": "{{ owner }}"
   register: vpc_info
 
 - name: delete vpcs
@@ -76,6 +88,8 @@
 - name: gather information about a DHCP options set
   ec2_vpc_dhcp_option_info:
     region: "{{ region }}"
+    filters:
+      "tag:Owner": "{{ owner }}"
   register: dhcp_info  
 
 - name: delete a DHCP options set
@@ -88,6 +102,8 @@
 - name: gather information about EIP
   ec2_eip_info:
     region: "{{ region }}"
+    filters:
+      "tag:Owner": "{{ owner }}"
   register: eip_info  
   
 - name: delete EIPs

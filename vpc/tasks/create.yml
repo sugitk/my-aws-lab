@@ -5,6 +5,8 @@
     cidr_block: "{{ lab_cidr_block }}"
     region: "{{ region }}"
     state: present
+    tags:
+      Owner: "{{ owner }}"
   register: vpc
 
 - name: create a subnet (public A)
@@ -15,6 +17,7 @@
     tags:
       Name: public subnet A
       Type: public
+      Owner: "{{ owner }}"
     state: present
   register: public_subnet_a
 
@@ -26,6 +29,7 @@
     tags:
       Name: public subnet B
       Type: public
+      Owner: "{{ owner }}"
     state: present
   register: public_subnet_b
 
@@ -37,6 +41,7 @@
     tags:
       Name: private subnet A
       Type: private
+      Owner: "{{ owner }}"
     state: present
   register: private_subnet_a
 
@@ -48,6 +53,7 @@
     tags:
       Name: private subnet B
       Type: private
+      Owner: "{{ owner }}"
     state: present
   register: private_subnet_b
 
@@ -57,6 +63,8 @@
     cidr_block: "{{ isolated_cidr_block }}"
     region: "{{ region }}"
     state: present
+    tags:
+      Owner: "{{ owner }}"
   register: vpc_isolated
 
 - name: create a subnet (isolated A)
@@ -67,6 +75,7 @@
     tags:
       Name: isolated subnet A
       Type: isolated
+      Owner: "{{ owner }}"
     state: present
 
 - name: create a subnet (isolated B)
@@ -77,12 +86,15 @@
     tags:
       Name: isolated subnet B
       Type: isolated
+      Owner: "{{ owner }}"
     state: present
 
 - name: create an Internet gateway
   ec2_vpc_igw:
     vpc_id: "{{ vpc.vpc.id }}"
     state: present
+    tags:
+      Owner: "{{ owner }}"
   register: igw
 
 - name: create a NAT gateway (public A)
@@ -99,6 +111,7 @@
     resource: "{{ ngw_a.nat_gateway_id }}"
     tags:
       Name: NAT gateway public A
+      Owner: "{{ owner }}"
  
 - name: create a NAT gateway (public B)
   ec2_vpc_nat_gateway:
@@ -114,6 +127,7 @@
     resource: "{{ ngw_b.nat_gateway_id }}"
     tags:
       Name: NAT gateway public B
+      Owner: "{{ owner }}"
 
 - name: subnet route table (private A)
   ec2_vpc_route_table:
@@ -126,6 +140,7 @@
         gateway_id: "{{ ngw_a.nat_gateway_id }}"
     tags:
       Name: NAT gateway private A
+      Owner: "{{ owner }}"
     state: present
 
 - name: subnet route table (private B)
@@ -139,6 +154,7 @@
         gateway_id: "{{ ngw_b.nat_gateway_id }}"
     tags:
       Name: NAT gateway private B
+      Owner: "{{ owner }}"
     state: present
 
 - name: create a VPC peer
@@ -147,6 +163,8 @@
     vpc_id: "{{ vpc.vpc.id }}"
     peer_vpc_id: "{{ vpc_isolated.vpc.id }}"
     state: present
+    tags:
+      Owner: "{{ owner }}"
   register: vpc_peer
 
 - name: accept local VPC peering request
@@ -178,6 +196,7 @@
         gateway_id: "{{ igw.gateway_id }}"
     tags:
       Name: lab
+      Owner: "{{ owner }}"
     state: present
 
 - name: gather information about route tables (isolated)
@@ -201,5 +220,34 @@
         vpc_peering_connection_id: "{{ vpc_peer.peering_id }}"
     tags:
       Name: isolated
+      Owner: "{{ owner }}"
     state: present
+
+- name: gather information about EIP
+  ec2_eip_info:
+    region: "{{ region }}"
+  register: eip_info
+
+- name: tag on the EIP
+  ec2_tag:
+    region: "{{ region }}"
+    resource: "{{ item.allocation_id }}"
+    tags:
+      Name: EIP created by NAT gateway
+      Owner: "{{ owner }}"
+  loop: "{{ eip_info.addresses }}"
+
+- name: gather information about DHCP options set
+  ec2_vpc_dhcp_option_info:
+    region: "{{ region }}"
+  register: dhcp_info  
+
+- name: tag on the DHCP options set
+  ec2_tag:
+    region: "{{ region }}"
+    resource: "{{ item.dhcp_options_id }}"
+    tags:
+      Name: DHCP options set
+      Owner: "{{ owner }}"
+  loop: "{{ dhcp_info.dhcp_options }}"
 
