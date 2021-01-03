@@ -19,6 +19,11 @@ To add EC2 instances in VPC for example:
 $ ansible-playbook ec2_cluster_rhel8.yml
 ```
 
+To remove all EC2 instances:
+```
+$ ansible-playbook ec2_wipe.yml
+```
+
 Requirements
 ------------
 
