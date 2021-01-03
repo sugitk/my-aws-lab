@@ -3,6 +3,7 @@
 
 region: ca-central-1
 key: tsugimur-canada
+owner: tsugimur
 lab_vpc_name: "lab tsugimur"
 isolated_vpc_name: "isolated tsugimur"
 

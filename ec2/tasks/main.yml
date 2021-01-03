@@ -1,4 +1,7 @@
 ---
+- include_tasks: wipe.yml
+  when: create == "wipe"
+
 - include_tasks: bastion.yml
   when: create == "bastion"
 

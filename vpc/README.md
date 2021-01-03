@@ -36,6 +36,8 @@ Example Playbook
   connection: local
   roles:
     - role: vpc
+      vars:
+        create: true
 ```
 
 License

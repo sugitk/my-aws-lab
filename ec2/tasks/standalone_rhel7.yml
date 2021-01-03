@@ -33,6 +33,7 @@
         cidr_ip: "{{ public_cidr_block }}"
     tags:
       Name: AP
+      Owner: "{{ owner }}"
   register: security_group
 
 - name: create a VM
@@ -52,5 +53,6 @@
         delete_on_termination: true
     instance_tags:
       Name: standalone RHEL7
+      Owner: "{{ owner }}"
   with_random_choice: "{{ subnet_info.subnets }}"
   

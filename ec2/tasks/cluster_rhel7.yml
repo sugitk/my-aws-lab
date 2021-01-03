@@ -41,6 +41,7 @@
         cidr_ip: "{{ public_cidr_block }}"
     tags:
       Name: AP
+      Owner: "{{ owner }}"
   register: security_group_ap
 
 - name: security group for DB
@@ -58,6 +59,7 @@
         cidr_ip: "{{ public_cidr_block }}"
     tags:
       Name: DB
+      Owner: "{{ owner }}"
   register: security_group_db
 
 - name: create a VM (AP1)
@@ -77,6 +79,7 @@
         delete_on_termination: true
     instance_tags:
       Name: "Cluster AP RHEL7 #1"
+      Owner: "{{ owner }}"
   with_random_choice: "{{ subnet_info_public.subnets }}"
 
 - name: create a VM (AP2)
@@ -96,6 +99,7 @@
         delete_on_termination: true
     instance_tags:
       Name: "Cluster AP RHEL7 #2"
+      Owner: "{{ owner }}"
   with_random_choice: "{{ subnet_info_public.subnets }}"
 
 - name: create a VM (AP3)
@@ -115,6 +119,7 @@
         delete_on_termination: true
     instance_tags:
       Name: "Cluster AP RHEL7 #3"
+      Owner: "{{ owner }}"
   with_random_choice: "{{ subnet_info_public.subnets }}"
 
 - name: create a VM (DB)
@@ -134,5 +139,6 @@
         delete_on_termination: true
     instance_tags:
       Name: "Cluster DB RHEL7"
+      Owner: "{{ owner }}"
   with_random_choice: "{{ subnet_info_private.subnets }}"
   
