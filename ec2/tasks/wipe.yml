@@ -1,0 +1,30 @@
+---
+- name: gather information about security group
+  ec2_group_info:
+    region: "{{ region }}"
+    filters:
+      "tag:Owner": "{{ owner }}"
+  register: group_info
+
+- name: gather information about instances
+  ec2_instance_info:
+    region: "{{ region }}"
+    filters:
+      "tag:Owner": "{{ owner }}"
+  register: instance_info
+
+- name: remove VMs
+  ec2:
+    state: absent
+    wait: true
+    region: "{{ region }}"
+    instance_ids: "{{ item.instance_id }}"
+  loop: "{{ instance_info.instances }}"
+
+- name: remove security groups
+  ec2_group:
+    state: absent
+    region: "{{ region }}"
+    group_id: "{{ item.group_id }}"
+  loop: "{{ group_info.security_groups }}"
+

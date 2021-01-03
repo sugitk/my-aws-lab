@@ -41,6 +41,7 @@
         cidr_ip: "{{ public_cidr_block }}"
     tags:
       Name: AP
+      Owner: "{{ owner }}"
   register: security_group_ap
 
 - name: security group for DB
@@ -58,6 +59,7 @@
         cidr_ip: "{{ public_cidr_block }}"
     tags:
       Name: DB
+      Owner: "{{ owner }}"
   register: security_group_db
 
 - name: create a VM (AP)
@@ -77,6 +79,7 @@
         delete_on_termination: true
     instance_tags:
       Name: AP RHEL8
+      Owner: "{{ owner }}"
   with_random_choice: "{{ subnet_info_public.subnets }}"
   
 - name: create a VM (DB)
@@ -96,5 +99,6 @@
         delete_on_termination: true
     instance_tags:
       Name: DB RHEL8
+      Owner: "{{ owner }}"
   with_random_choice: "{{ subnet_info_private.subnets }}"
   
