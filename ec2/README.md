@@ -13,6 +13,8 @@ Requirements
 
 Tested with Ansible 2.9.15
 
+When use a cluster setup, you need to create a certificate at Certificate Manager in advance.
+
 
 Role Variables
 --------------
@@ -49,3 +51,4 @@ Author Information
 ------------------
 
 Takashi Sugimura @sugitk
+
