@@ -38,6 +38,10 @@
       - proto: tcp
         ports:
           - 22
+          - 4369
+          - 5672
+          - 15672
+          - 25672
         cidr_ip: "{{ public_cidr_block }}"
     tags:
       Name: AP
