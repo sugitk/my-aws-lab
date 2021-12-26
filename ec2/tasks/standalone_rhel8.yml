@@ -43,7 +43,7 @@
 - name: create a VM
   ec2:
     instance_type: t2.medium
-    image: "{{ ami_rhel83 }}"
+    image: "{{ ami_rhel84 }}"
     wait: true
     assign_public_ip: true
     vpc_subnet_id: "{{ item.subnet_id }}"

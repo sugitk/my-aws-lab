@@ -11,7 +11,7 @@ public_cidr_block: 10.0.0.0/24
 private_cidr_block: 10.0.10.0/24
 isolated_cidr_block: 192.168.0.0/24
 
-ami_rhel83: ami-08523c5075ba75813
+ami_rhel84: ami-05fa0e990c7b9716f
 ami_rhel79: ami-0de9a412a63b8f99d
 ami_win2019: ami-0cdfa905439f4b9ca
 ami_win2016: ami-04999a2f2a757a768
