@@ -1,8 +1,8 @@
 ---
 # defaults file for ec2
 
-region: ca-central-1
-key: tsugimur-canada
+region: ap-northeast-3
+key: tsugimur-osaka
 owner: tsugimur
 lab_vpc_name: "lab tsugimur"
 isolated_vpc_name: "isolated tsugimur"
@@ -11,9 +11,10 @@ public_cidr_block: 10.0.0.0/24
 private_cidr_block: 10.0.10.0/24
 isolated_cidr_block: 192.168.0.0/24
 
-ami_rhel84: ami-05fa0e990c7b9716f
-ami_rhel79: ami-0de9a412a63b8f99d
-ami_win2019: ami-0cdfa905439f4b9ca
-ami_win2016: ami-04999a2f2a757a768
-ami_win2012r2: ami-0a0fa1a685c5d1518
+ami_rhel84: ami-066136c75998a0ef3
+ami_rhel79: ami-00718a107dacde79f
+ami_win2022: ami-00b401ac504acff0d
+ami_win2019: ami-018bde2ca036b84af
+ami_win2016: ami-01d520a7555386321
+ami_win2012r2: ami-0254c97cf6eb29315
 

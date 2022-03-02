@@ -3,9 +3,9 @@
 
 owner: tsugimur
 
-region: ca-central-1
-az_a: ca-central-1a
-az_b: ca-central-1b
+region: ap-northeast-3
+az_a: ap-northeast-3a
+az_b: ap-northeast-3b
 
 lab_vpc_name: "lab tsugimur"
 lab_cidr_block: 10.0.0.0/16
