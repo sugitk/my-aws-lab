@@ -30,19 +30,28 @@ Requirements
 - boto
 - boto3
 - botocore
-- python >= 2.6
+- python >= 3.8
 
-Tested with Ansible 2.9.15
+Tested with Ansible 2.12.1 and collection amazon.aws 2.1.0.
 
 You need to configure a credential to connect AWS.
 
-For example, at ~/.awx/credentials
+For example, 
+
+$HOME/.awx/credentials
 
 ```
 [default]
 aws_access_key_id = XXXXXXXXXXXXXXXXXX
 aws_secret_access_key = XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 ```
+
+$HOME/.aws/config
+```
+[default]
+region = ap-northeast-3
+```
+
 
 
 License
