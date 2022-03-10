@@ -40,7 +40,7 @@
 
 - name: create a VM
   ec2_instance:
-    instance_type: t2.micro
+    instance_type: t3.micro
     region: "{{ region }}"
     image_id: "{{ ami_rhel84 }}"
     key_name: "{{ key }}"
