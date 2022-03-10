@@ -74,7 +74,6 @@
     key_name: "{{ key }}"
     wait: true
     termination_protection: false
-    #vpc_subnet_id: "{{ subnet_info.subnets[0].subnet_id }}"
     vpc_subnet_id: "{{ item.subnet_id }}"
     network:
       assign_public_ip: true
@@ -98,7 +97,6 @@
     key_name: "{{ key }}"
     wait: true
     termination_protection: false
-    #vpc_subnet_id: "{{ subnet_info.subnets[0].subnet_id }}"
     vpc_subnet_id: "{{ item.subnet_id }}"
     network:
       assign_public_ip: true
