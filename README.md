@@ -32,7 +32,7 @@ Requirements
 - botocore
 - python >= 3.8
 
-Tested with Ansible 2.12.1 and collection amazon.aws 2.1.0.
+Tested with Ansible 2.12.1 and collection amazon.aws 3.1.1.
 
 You need to configure a credential to connect AWS.
 

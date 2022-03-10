@@ -11,6 +11,7 @@
     region: "{{ region }}"
     filters:
       vpc-id: "{{ vpc_info.vpcs[0].id }}"
+      availability-zone: "{{ az_a }}"
       "tag:Type": public
   register: subnet_info
 
@@ -38,23 +39,24 @@
   register: security_group
 
 - name: create a VM
-  ec2:
+  ec2_instance:
     instance_type: t2.micro
-    image: "{{ ami_rhel84 }}"
-    wait: true
-    assign_public_ip: true
-    termination_protection: true
-    vpc_subnet_id: "{{ item.subnet_id }}"
-    group_id: "{{ security_group.group_id }}"
     region: "{{ region }}"
+    image_id: "{{ ami_rhel84 }}"
     key_name: "{{ key }}"
+    wait: true
+    termination_protection: true
+    vpc_subnet_id: "{{ subnet_info.subnets[0].subnet_id }}"
+    network:
+      assign_public_ip: true
+    security_group: "{{ security_group.group_name }}"
     volumes:
       - device_name: /dev/sda1
-        volume_size: 30
-        volume_type: gp2
-        delete_on_termination: true
-    instance_tags:
+        ebs:
+          volume_size: 30
+          volume_type: gp2
+          delete_on_termination: true
+    tags:
       Name: bastion
       Owner: "{{ owner }}"
-  with_random_choice: "{{ subnet_info.subnets }}"
   

@@ -2,6 +2,9 @@
 # defaults file for ec2
 
 region: ap-northeast-3
+az_a: ap-northeast-3a
+az_b: ap-northeast-3b
+
 key: tsugimur-osaka
 owner: tsugimur
 lab_vpc_name: "lab tsugimur"
