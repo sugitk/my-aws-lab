@@ -52,6 +52,8 @@ $HOME/.aws/config
 region = ap-northeast-3
 ```
 
+If you create a load balancer, you need to create a certificate at the `AWS Certificate Manager` in advance.
+
 
 
 License
