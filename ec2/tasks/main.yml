@@ -29,6 +29,9 @@
 - include_tasks: cluster_rhel8.yml
   when: create == "cluster_rhel8"
 
+- include_tasks: windows2022.yml
+  when: create == "windows2022"
+
 - include_tasks: windows2019.yml
   when: create == "windows2019"
 
