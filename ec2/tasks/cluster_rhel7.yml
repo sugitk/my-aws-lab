@@ -67,87 +67,103 @@
   register: security_group_db
 
 - name: create a VM (AP1)
-  ec2:
-    instance_type: t2.medium
-    image: "{{ ami_rhel79 }}"
-    wait: true
-    assign_public_ip: true
-    vpc_subnet_id: "{{ item.subnet_id }}"
-    group_id: "{{ security_group_ap.group_id }}"
+  ec2_instance:
+    instance_type: t3.medium
     region: "{{ region }}"
+    image_id: "{{ ami_rhel79 }}"
     key_name: "{{ key }}"
+    state: running
+    wait: true
+    termination_protection: false
+    vpc_subnet_id: "{{ item.subnet_id }}"
+    network:
+      assign_public_ip: true
+    security_group: "{{ security_group_ap.group_name }}"
     volumes:
       - device_name: /dev/sda1
-        volume_size: 30
-        volume_type: gp2
-        delete_on_termination: true
-    instance_tags:
+        ebs:
+          volume_size: 30
+          volume_type: gp2
+          delete_on_termination: true
+    tags:
       Name: "Cluster AP RHEL7 #1"
       Owner: "{{ owner }}"
   with_random_choice: "{{ subnet_info_public.subnets }}"
   register: ap1
 
 - name: create a VM (AP2)
-  ec2:
-    instance_type: t2.medium
-    image: "{{ ami_rhel79 }}"
-    wait: true
-    assign_public_ip: true
-    vpc_subnet_id: "{{ item.subnet_id }}"
-    group_id: "{{ security_group_ap.group_id }}"
+  ec2_instance:
+    instance_type: t3.medium
     region: "{{ region }}"
+    image_id: "{{ ami_rhel79 }}"
     key_name: "{{ key }}"
+    state: running
+    wait: true
+    termination_protection: false
+    vpc_subnet_id: "{{ item.subnet_id }}"
+    network:
+      assign_public_ip: true
+    security_group: "{{ security_group_ap.group_name }}"
     volumes:
       - device_name: /dev/sda1
-        volume_size: 30
-        volume_type: gp2
-        delete_on_termination: true
-    instance_tags:
+        ebs:
+          volume_size: 30
+          volume_type: gp2
+          delete_on_termination: true
+    tags:
       Name: "Cluster AP RHEL7 #2"
       Owner: "{{ owner }}"
   with_random_choice: "{{ subnet_info_public.subnets }}"
   register: ap2
 
 - name: create a VM (AP3)
-  ec2:
-    instance_type: t2.medium
-    image: "{{ ami_rhel79 }}"
-    wait: true
-    assign_public_ip: true
-    vpc_subnet_id: "{{ item.subnet_id }}"
-    group_id: "{{ security_group_ap.group_id }}"
+  ec2_instance:
+    instance_type: t3.medium
     region: "{{ region }}"
+    image_id: "{{ ami_rhel79 }}"
     key_name: "{{ key }}"
+    state: running
+    wait: true
+    termination_protection: false
+    vpc_subnet_id: "{{ item.subnet_id }}"
+    network:
+      assign_public_ip: true
+    security_group: "{{ security_group_ap.group_name }}"
     volumes:
       - device_name: /dev/sda1
-        volume_size: 30
-        volume_type: gp2
-        delete_on_termination: true
-    instance_tags:
+        ebs:
+          volume_size: 30
+          volume_type: gp2
+          delete_on_termination: true
+    tags:
       Name: "Cluster AP RHEL7 #3"
       Owner: "{{ owner }}"
   with_random_choice: "{{ subnet_info_public.subnets }}"
   register: ap3
 
 - name: create a VM (DB)
-  ec2:
-    instance_type: t2.medium
-    image: "{{ ami_rhel79 }}"
-    wait: true
-    assign_public_ip: false
-    vpc_subnet_id: "{{ item.subnet_id }}"
-    group_id: "{{ security_group_db.group_id }}"
+  ec2_instance:
+    instance_type: t3.medium
     region: "{{ region }}"
+    image_id: "{{ ami_rhel79 }}"
     key_name: "{{ key }}"
+    state: running
+    wait: true
+    termination_protection: false
+    vpc_subnet_id: "{{ item.subnet_id }}"
+    network:
+      assign_public_ip: true
+    security_group: "{{ security_group_ap.group_name }}"
     volumes:
       - device_name: /dev/sda1
-        volume_size: 30
-        volume_type: gp2
-        delete_on_termination: true
-    instance_tags:
+        ebs:
+          volume_size: 30
+          volume_type: gp2
+          delete_on_termination: true
+    tags:
       Name: "Cluster DB RHEL7"
       Owner: "{{ owner }}"
-  with_random_choice: "{{ subnet_info_private.subnets }}"
+  with_random_choice: "{{ subnet_info_public.subnets }}"
 
 - name: security group for ALB
   ec2_group:
@@ -179,11 +195,11 @@
     health_check_port: 80
     health_check_path: /api/v2/ping/
     targets:
-      - Id: "{{ ap1.results[0].instances[0].id }}"
+      - Id: "{{ ap1.results[0].instances[0].instance_id }}"
         Port: 80
-      - Id: "{{ ap2.results[0].instances[0].id }}"
+      - Id: "{{ ap2.results[0].instances[0].instance_id }}"
         Port: 80
-      - Id: "{{ ap3.results[0].instances[0].id }}"
+      - Id: "{{ ap3.results[0].instances[0].instance_id }}"
         Port: 80
     tags:
       Name: "Cluster RHEL7"

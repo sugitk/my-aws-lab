@@ -72,6 +72,7 @@
     region: "{{ region }}"
     image_id: "{{ ami_rhel79 }}"
     key_name: "{{ key }}"
+    state: running
     wait: true
     termination_protection: false
     vpc_subnet_id: "{{ item.subnet_id }}"
@@ -95,6 +96,7 @@
     region: "{{ region }}"
     image_id: "{{ ami_rhel79 }}"
     key_name: "{{ key }}"
+    state: running
     wait: true
     termination_protection: false
     vpc_subnet_id: "{{ item.subnet_id }}"

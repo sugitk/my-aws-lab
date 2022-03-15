@@ -44,6 +44,7 @@
     region: "{{ region }}"
     image_id: "{{ ami_rhel84 }}"
     key_name: "{{ key }}"
+    state: running
     wait: true
     termination_protection: true
     vpc_subnet_id: "{{ subnet_info.subnets[0].subnet_id }}"
