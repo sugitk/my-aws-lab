@@ -54,6 +54,7 @@ region = ap-northeast-3
 
 If you create a load balancer, you need to create a certificate at the `AWS Certificate Manager` in advance.
 
+And if you want to use another region, please specify the AMI ID in the file `ec2/defaults/main.yml`.
 
 
 License
