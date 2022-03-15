@@ -41,22 +41,26 @@
   register: security_group
 
 - name: create a VM
-  ec2:
-    instance_type: t2.medium
-    image: "{{ ami_rhel79 }}"
-    wait: true
-    assign_public_ip: true
-    vpc_subnet_id: "{{ item.subnet_id }}"
-    group_id: "{{ security_group.group_id }}"
+  ec2_instance:
+    instance_type: t3.medium
     region: "{{ region }}"
+    image_id: "{{ ami_rhel79 }}"
     key_name: "{{ key }}"
+    state: running
+    wait: true
+    termination_protection: false
+    vpc_subnet_id: "{{ item.subnet_id }}"
+    network:
+      assign_public_ip: true
+    security_group: "{{ security_group.group_name }}"
     volumes:
       - device_name: /dev/sda1
-        volume_size: 30
-        volume_type: gp2
-        delete_on_termination: true
-    instance_tags:
+        ebs:
+          volume_size: 30
+          volume_type: gp2
+          delete_on_termination: true
+    tags:
       Name: standalone RHEL7
       Owner: "{{ owner }}"
   with_random_choice: "{{ subnet_info.subnets }}"
-  
+
