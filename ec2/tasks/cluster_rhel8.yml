@@ -154,7 +154,7 @@
     vpc_subnet_id: "{{ item.subnet_id }}"
     network:
       assign_public_ip: true
-    security_group: "{{ security_group_ap.group_name }}"
+    security_group: "{{ security_group_db.group_name }}"
     volumes:
       - device_name: /dev/sda1
         ebs:
@@ -164,7 +164,7 @@
     tags:
       Name: "Cluster DB RHEL8"
       Owner: "{{ owner }}"
-  with_random_choice: "{{ subnet_info_public.subnets }}"
+  with_random_choice: "{{ subnet_info_private.subnets }}"
 
 - name: security group for ALB
   ec2_group:
