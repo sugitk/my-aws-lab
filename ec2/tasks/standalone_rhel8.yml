@@ -45,7 +45,7 @@
   ec2_instance:
     instance_type: t3.medium
     region: "{{ region }}"
-    image_id: "{{ ami_rhel84 }}"
+    image_id: "{{ ami_rhel86 }}"
     key_name: "{{ key }}"
     state: running
     wait: true
