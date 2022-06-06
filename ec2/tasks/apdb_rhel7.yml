@@ -24,7 +24,7 @@
 
 - name: security group for AP
   ec2_group:
-    name: AP
+    name: "{{ owner }} AP"
     description: AP
     region: "{{ region }}"
     vpc_id: "{{ vpc_info.vpcs[0].id }}"
@@ -44,13 +44,13 @@
           - 25672
         cidr_ip: "{{ public_cidr_block }}"
     tags:
-      Name: AP
+      Name: "{{ owner }} AP"
       Owner: "{{ owner }}"
   register: security_group_ap
 
 - name: security group for DB
   ec2_group:
-    name: DB
+    name: "{{ owner }} DB"
     description: DB
     region: "{{ region }}"
     vpc_id: "{{ vpc_info.vpcs[0].id }}"
@@ -62,7 +62,7 @@
           - 22
         cidr_ip: "{{ public_cidr_block }}"
     tags:
-      Name: DB
+      Name: "{{ owner }} DB"
       Owner: "{{ owner }}"
   register: security_group_db
 
@@ -86,7 +86,7 @@
           volume_type: gp2
           delete_on_termination: true
     tags:
-      Name: AP RHEL7
+      Name: "{{ owner }} AP RHEL7"
       Owner: "{{ owner }}"
   with_random_choice: "{{ subnet_info_public.subnets }}"
 
@@ -110,7 +110,7 @@
           volume_type: gp2
           delete_on_termination: true
     tags:
-      Name: DB RHEL7
+      Name: "{{ owner }} DB RHEL7"
       Owner: "{{ owner }}"
   with_random_choice: "{{ subnet_info_private.subnets }}"
 

@@ -16,7 +16,7 @@
 
 - name: security group for isolated
   ec2_group:
-    name: isolated RHEL8
+    name: "{{ owner }} isolated RHEL8"
     description: isolated and receptor (22/tcp, 27199/tcp)
     region: "{{ region }}"
     vpc_id: "{{ vpc_info.vpcs[0].id }}"
@@ -28,7 +28,7 @@
           - 27199
         cidr_ip: "{{ public_cidr_block }}"
     tags:
-      Name: isolated RHEL8
+      Name: "{{ owner }} isolated RHEL8"
       Owner: "{{ owner }}"
   register: security_group
 
@@ -52,7 +52,7 @@
           volume_type: gp2
           delete_on_termination: true
     tags:
-      Name: "isolated RHEL8"
+      Name: "{{ owner }} isolated RHEL8"
       Owner: "{{ owner }}"
   with_random_choice: "{{ subnet_info.subnets }}"
 

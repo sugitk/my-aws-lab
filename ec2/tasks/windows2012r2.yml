@@ -16,7 +16,7 @@
 
 - name: security group for Windows
   ec2_group:
-    name: Windows
+    name: "{{ owner }} Windows"
     description: Windows
     region: "{{ region }}"
     vpc_id: "{{ vpc_info.vpcs[0].id }}"
@@ -31,7 +31,7 @@
           - 5986
         cidr_ip: "{{ public_cidr_block }}"
     tags:
-      Name: Windows
+      Name: "{{ owner }} Windows"
       Owner: "{{ owner }}"
   register: security_group
 
@@ -56,7 +56,7 @@
           volume_type: gp2
           delete_on_termination: true
     tags:
-      Name: "Windows 2012R2"
+      Name: "{{ owner }} Windows 2012R2"
       Owner: "{{ owner }}"
   with_random_choice: "{{ subnet_info.subnets }}"
 

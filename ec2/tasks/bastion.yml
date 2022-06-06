@@ -23,7 +23,7 @@
 
 - name: security group for SSH
   ec2_group:
-    name: SSH
+    name: "{{ owner }} SSH"
     description: SSH
     region: "{{ region }}"
     vpc_id: "{{ vpc_info.vpcs[0].id }}"
@@ -34,7 +34,7 @@
           - 22
         cidr_ip: "{{ my_ipaddress.content }}/32"
     tags:
-      Name: SSH
+      Name: "{{ owner }} SSH"
       Owner: "{{ owner }}"
   register: security_group
 
@@ -58,6 +58,6 @@
           volume_type: gp2
           delete_on_termination: true
     tags:
-      Name: bastion
+      Name: "{{ owner }} bastion"
       Owner: "{{ owner }}"
   

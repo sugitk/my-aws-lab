@@ -24,7 +24,7 @@
 
 - name: security group for AP
   ec2_group:
-    name: AP
+    name: "{{ owner }} AP"
     description: AP
     region: "{{ region }}"
     vpc_id: "{{ vpc_info.vpcs[0].id }}"
@@ -44,13 +44,13 @@
           - 25672
         cidr_ip: "{{ public_cidr_block }}"
     tags:
-      Name: AP
+      Name: "{{ owner }} AP"
       Owner: "{{ owner }}"
   register: security_group_ap
 
 - name: security group for DB
   ec2_group:
-    name: DB
+    name: "{{ owner }} DB"
     description: DB
     region: "{{ region }}"
     vpc_id: "{{ vpc_info.vpcs[0].id }}"
@@ -62,7 +62,7 @@
           - 22
         cidr_ip: "{{ public_cidr_block }}"
     tags:
-      Name: DB
+      Name: "{{ owner }} DB"
       Owner: "{{ owner }}"
   register: security_group_db
 
@@ -86,7 +86,7 @@
           volume_type: gp2
           delete_on_termination: true
     tags:
-      Name: "Cluster AP RHEL7 #1"
+      Name: "{{ owner }} Cluster AP RHEL7 #1"
       Owner: "{{ owner }}"
   with_random_choice: "{{ subnet_info_public.subnets }}"
   register: ap1
@@ -111,7 +111,7 @@
           volume_type: gp2
           delete_on_termination: true
     tags:
-      Name: "Cluster AP RHEL7 #2"
+      Name: "{{ owner }} Cluster AP RHEL7 #2"
       Owner: "{{ owner }}"
   with_random_choice: "{{ subnet_info_public.subnets }}"
   register: ap2
@@ -136,7 +136,7 @@
           volume_type: gp2
           delete_on_termination: true
     tags:
-      Name: "Cluster AP RHEL7 #3"
+      Name: "{{ owner }} Cluster AP RHEL7 #3"
       Owner: "{{ owner }}"
   with_random_choice: "{{ subnet_info_public.subnets }}"
   register: ap3
@@ -161,13 +161,13 @@
           volume_type: gp2
           delete_on_termination: true
     tags:
-      Name: "Cluster DB RHEL7"
+      Name: "{{ owner }} Cluster DB RHEL7"
       Owner: "{{ owner }}"
   with_random_choice: "{{ subnet_info_private.subnets }}"
 
 - name: security group for ALB
   ec2_group:
-    name: ALB
+    name: "{{ owner }} ALB"
     description: ALB
     region: "{{ region }}"
     vpc_id: "{{ vpc_info.vpcs[0].id }}"
@@ -178,13 +178,13 @@
           - 443
         cidr_ip: 0.0.0.0/0
     tags:
-      Name: ALB
+      Name: "{{ owner }} ALB"
       Owner: "{{ owner }}"
   register: security_group_alb
 
 - name: create a target group
   elb_target_group:
-    name: ClusterRHEL7
+    name: "{{ owner }} ClusterRHEL7"
     protocol: http
     port: 80
     region: "{{ region }}"
@@ -202,7 +202,7 @@
       - Id: "{{ ap3.results[0].instances[0].instance_id }}"
         Port: 80
     tags:
-      Name: "Cluster RHEL7"
+      Name: "{{ owner }} Cluster RHEL7"
       Owner: "{{ owner }}"
 
 - name: obtain all ACM certificates
@@ -211,7 +211,7 @@
 
 - name: create an Application load balancer
   elb_application_lb:
-    name: ALBRHEL7
+    name: "{{ owner }} ALBRHEL7"
     state: present
     subnets: "{{ subnet_info_public | json_query('subnets[*].id') }}"
     security_groups:
@@ -226,6 +226,6 @@
           - Type: forward
             TargetGroupName: ClusterRHEL7
     tags:
-      Name: "ALB RHEL7"
+      Name: "{{ owner }} ALB RHEL7"
       Owner: "{{ owner }}"
 

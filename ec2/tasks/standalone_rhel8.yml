@@ -16,7 +16,7 @@
 
 - name: security group for AP
   ec2_group:
-    name: AP
+    name: "{{ owner }} AP"
     description: AP
     region: "{{ region }}"
     vpc_id: "{{ vpc_info.vpcs[0].id }}"
@@ -37,7 +37,7 @@
           - 27199
         cidr_ip: "{{ public_cidr_block }}"
     tags:
-      Name: AP
+      Name: "{{ owner }} AP"
       Owner: "{{ owner }}"
   register: security_group
 
@@ -61,7 +61,7 @@
           volume_type: gp2
           delete_on_termination: true
     tags:
-      Name: standalone RHEL8
+      Name: "{{ owner }} standalone RHEL8"
       Owner: "{{ owner }}"
   with_random_choice: "{{ subnet_info.subnets }}"
 

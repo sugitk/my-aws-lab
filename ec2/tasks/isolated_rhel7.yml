@@ -16,7 +16,7 @@
 
 - name: security group for isolated
   ec2_group:
-    name: isolated
+    name: "{{ owner }} isolated"
     description: isolated (22/tcp)
     region: "{{ region }}"
     vpc_id: "{{ vpc_info.vpcs[0].id }}"
@@ -27,7 +27,7 @@
           - 22
         cidr_ip: "{{ public_cidr_block }}"
     tags:
-      Name: isolated
+      Name: "{{ owner }} isolated"
       Owner: "{{ owner }}"
   register: security_group
 
@@ -51,7 +51,7 @@
           volume_type: gp2
           delete_on_termination: true
     tags:
-      Name: "isolated RHEL7"
+      Name: "{{ owner }} isolated RHEL7"
       Owner: "{{ owner }}"
   with_random_choice: "{{ subnet_info.subnets }}"
 
