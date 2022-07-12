@@ -185,7 +185,7 @@
 
 - name: create a target group
   elb_target_group:
-    name: "{{ owner }} ClusterRHEL8"
+    name: "{{ owner }}-ClusterRHEL8"
     protocol: http
     port: 80
     region: "{{ region }}"
@@ -212,7 +212,7 @@
 
 - name: create an Application load balancer
   elb_application_lb:
-    name: "{{ owner }} ALBRHEL8"
+    name: "{{ owner }}-ALBRHEL8"
     state: present
     subnets: "{{ subnet_info_public | json_query('subnets[*].id') }}"
     security_groups:
@@ -225,7 +225,7 @@
           - CertificateArn: "{{ acm_info.certificates[0].certificate_arn }}"
         DefaultActions:
           - Type: forward
-            TargetGroupName: ClusterRHEL8
+            TargetGroupName: "{{ owner }}-ClusterRHEL8"
     tags:
       Name: "{{ owner }} ALB RHEL8"
       Owner: "{{ owner }}"
