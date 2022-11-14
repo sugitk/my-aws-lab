@@ -17,8 +17,8 @@ isolated_cidr_block: 192.168.0.0/24
 ami_rhel86: ami-044921b7897a7e0da
 ami_rhel84: ami-066136c75998a0ef3
 ami_rhel79: ami-00718a107dacde79f
-ami_win2022: ami-0a48eba9f65d75e5c
-ami_win2019: ami-061d3dfeaa0e483a2
-ami_win2016: ami-01d520a7555386321
-ami_win2012r2: ami-018af6a5880d4a93a
+ami_win2022: ami-05e63d0829487421e
+ami_win2019: ami-08700056494327816
+ami_win2016: ami-058b5e938284da7e9
+ami_win2012r2: ami-0f8631249f16ca5c0
 
