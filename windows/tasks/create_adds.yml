@@ -1,7 +1,11 @@
 ---
-- name: waiting for accepting a connection
-  ansible.builtin.wait_for_connection:
-    timeout: 300
+#- name: waiting for accepting a connection
+#  ansible.builtin.wait_for_connection:
+#    timeout: 300
+
+- name: sleep 60 seconds (instead of the above)
+  ansible.builtin.pause:
+    seconds: 60
 
 - name: install AD DS feature
   ansible.windows.win_feature:
