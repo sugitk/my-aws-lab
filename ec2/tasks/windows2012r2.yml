@@ -70,4 +70,21 @@
       Name: "{{ owner }} Windows 2012R2"
       Owner: "{{ owner }}"
   with_random_choice: "{{ subnet_info.subnets }}"
+  register: ec2_instance
+
+- name: getting a password
+  community.aws.ec2_win_password:
+    instance_id: "{{ ec2_instance.results[0].instances[0].instance_id  }}"
+    region: "{{ region }}"
+    key_data: "{{ lookup('file', '~/.ssh/' + owner + '.pem') }}"
+    wait: true
+    wait_timeout: 120
+  register: ec2_win_password
+  until: ec2_win_password.win_password != ""
+  retries: 30
+  delay: 10
+
+- name: show Windows password for Administrator
+  ansible.builtin.debug:
+    msg: "Administrator password : {{ ec2_win_password.win_password }}"
 

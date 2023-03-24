@@ -7,3 +7,28 @@
       vars:
         create: "windows2022"
 
+- name: build an inventory
+  hosts: localhost
+  gather_facts: false
+  connection: local
+
+  tasks:
+  - name: add a windows host
+    ansible.builtin.add_host:
+      hostname: "windows"
+      ansible_host: "{{ ec2_instance.results[0].instances[0].public_ip_address }}"
+      ansible_port: 5986
+      ansible_connection: winrm
+      ansible_user: Administrator
+      ansible_password: "{{ ec2_win_password.win_password }}"
+      ansible_winrm_server_cert_validation: ignore
+
+- name: install AD DS feature
+  hosts: windows
+  gather_facts: false
+
+  roles:
+    - role: windows
+      vars:
+        create: "adds"
+

@@ -32,13 +32,13 @@ Requirements
 - botocore
 - python >= 3.8
 
-Tested with Ansible 2.12.1 and collection amazon.aws 3.1.1.
+Tested with Ansible Core 2.14 and collections [amazon.aws, community.aws]. 
 
 You need to configure a credential to connect AWS.
 
 For example, 
 
-$HOME/.awx/credentials
+$HOME/.aws/credentials
 
 ```
 [default]
@@ -51,6 +51,9 @@ $HOME/.aws/config
 [default]
 region = ap-northeast-3
 ```
+
+Also you need to store SSH key pair into $HOME/.ssh/ directory.
+By default, the task will read the private key from $HOME/.ssh/{{ owner }}.pem file.  The `owner` is defined in the ec2/defaults/main.yml.
 
 If you create a load balancer, you need to create a certificate at the `AWS Certificate Manager` in advance.
 
