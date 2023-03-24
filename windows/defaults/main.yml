@@ -1,0 +1,4 @@
+---
+dns_domain_name: "sbr-ansible.local"
+domain_netbios_name: "SBR-ANSIBLE"
+safe_mode_password: "Password123!"
